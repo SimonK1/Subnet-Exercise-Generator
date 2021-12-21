@@ -1,0 +1,186 @@
+---
+title: "Changes in the population of Trnava based on migration"
+author: 
+  - Erik Matovič
+  - Simon Kokavec
+date: November 2021
+output: html_document
+---
+
+## Import libraries and read dataset
+
+```{r}
+# import library tidyverse for pipelines and read dataset
+library(tidyverse)                
+data <- read_csv("../data/dataset.csv")
+```
+
+## Migration in all years
+Zistenie pristahovanych, odstahovanych a celkove migracne saldo za cele obdobie
+zoradené od najväčšieho salda.
+Migračné saldo = rozdiel medzi pristahovanými a odstahovanými 
+
+```{r}
+migration_all = data %>%
+  mutate(spolu_pristahovanych = rowSums(across(86:112)),
+         spolu_odstahovanych = rowSums(across(113:139)),
+         spolu_saldo = rowSums(across(140:166)),
+         spolu_celkovy_prirastok = rowSums(across(167:193))) %>%
+  select(1, 194:198) %>%
+  arrange(spolu_saldo)
+
+# remove last row, because it is NA
+migration_all <- migration_all[1:(dim(migration_all)[1] - 1),]
+migration_all
+```
+
+## Plot distance from Trnava with migration with linear regression
+
+```{r}
+n_row = dim(migration_all)[1] # number of rows
+n_col = dim(migration_all)[2] # number of cols
+
+distance = strtoi(migration_all[[2]][2:n_row]) # take x as distance apart from TT
+saldo = strtoi(migration_all[[n_col]][2:n_row]) # take y as migracne saldo aparto from TT
+
+fit_migration <- lm(saldo ~ distance, data=migration_all)
+
+plot(
+  x=distance,      
+  y=saldo,  
+  xlab = "vzdialenosť od TT (km)",
+  ylab = "migračné saldo",
+  col="red",  # nastavenie farby bodiek
+  pch=16,      # vyfarbenie bodiek
+  main = "Migračne saldo za sledované obdobie v zavislosti od vzdialenosti od TT",
+  abline(fit_migration)   # add best fit line in graph
+  )
+```
+
+```{r}
+fit_migration
+summary(fit_migration)
+```
+## Krížová validácia
+
+### Generovanie n_row náhodnych subsetov z 50% riadkov z tabuľky
+
+```{r}
+migration_all_n_subset <- map(1:n_row/2, ~migration_all[sort(sample(1:n_row, size=0.5*n_row)),])
+#migration_all_n_subset
+```
+
+### Nafitovanie modelu lineárnej regresie na každý z našich subsetov
+
+```{r}
+#distance_model = map(migration_all, ~ )
+
+migration_all_models <- map(migration_all_n_subset, ~lm(strtoi(.x[[2]][2:n_row]) ~ strtoi(.x[[n_col]][2:n_row])))
+# migration_all_models[1]
+```
+
+### Extrahovanie B koeficientov a reziduálov z každého modelu
+
+```{r}
+# bind data function
+f_bind_data <- function(x, y)
+{
+  sapply(y, function(g) g(x))
+}
+
+# list of b coef and residuals from model fitting
+migration_all_coef_list <- list(b_coefficients = coef, residuals = residuals)
+
+# iterate over list of data
+migration_all_extracted_data = map(migration_all_models, ~f_bind_data(.x, migration_all_coef_list))
+
+# migration_all_extracted_data[1]
+```
+
+### Výpočet štandardnej odchýlky
+
+```{r}
+library(gmodels)
+sd(map_dbl(migration_all_models, ~coef(.x)[1])) # sd of intercept values
+sd(map_dbl(migration_all_models, ~coef(.x)[2])) # sd of slope values
+```
+### Výpočet standard error of residual sum of squares (RSS) a residual mean square error (RMSE) pre každý set
+
+```{r}
+migration_all_rss <- map_dbl(migration_all_models, ~sum(resid(.x)^2))
+migration_all_rse <- map_dbl(migration_all_rss, ~sqrt(.x/(0.5*n_row-2)))
+boxplot(migration_all_rss)
+boxplot(migration_all_rse)
+```
+
+### t test
+
+```{r}
+migration_all_cfs <- map_dbl(migration_all_models, ~coef(.x)[2])
+t.test(migration_all_cfs, mu=0)
+```
+
+
+## Trnava - saldo
+
+```{r}
+tt_spolu_saldo = migration_all[1,n_col]
+tt_spolu_saldo
+```
+
+## Celkove saldo
+
+```{r}
+migration_all %>% 
+  filter(spolu_saldo > 0) %>%
+  summarise(sum(spolu_saldo))
+```
+
+## Odstahovany in all years
+Zistenie odstahovanych z obcií za sledované obdobie - iba tie obce, ktoré sa "vystahovavaju"
+
+```{r}
+odstahovany_all = migration_all %>%
+  filter(spolu_saldo < 0)
+odstahovany_all
+```
+
+## Number of odstahovanych municipalities based on cardinal directions 
+Má vzdialenosť od Trnavy niečo spoločné s vystahovanim z obcí ?
+
+```{r}
+odstahovany_muni_total = odstahovany_all %>%
+  group_by(`Svetová strana od Trnavy`) %>%
+  summarise(odstahovany_municipalities=n())
+odstahovany_muni_total
+```
+
+## Mean saldo increase of population in all years
+Zistenie nárastu populácie s migračným saldom podľa svetovych stran.
+
+```{r}
+saldo_mean_direction = migration_all %>%
+  group_by(`Svetová strana od Trnavy`) %>%
+  summarise(mean_spolu_saldo = mean(`spolu_saldo`))
+saldo_mean_direction
+```
+
+
+## Plot saldo of population in all years based on directions
+
+```{r}
+#saldo_increase_all=saldo_increase_all[-4,]
+min_saldo_mean = min(saldo_mean_direction['mean_spolu_saldo'])
+max_saldo_mean = max(saldo_mean_direction['mean_spolu_saldo'])
+# min delene 100, aby bol vydiet narast 
+barplot(saldo_mean_direction[["mean_spolu_saldo"]],ylim=c(min_saldo_mean / 100, max_saldo_mean), names.arg=saldo_mean_direction[["Svetová strana od Trnavy"]])
+```
+
+## TODO
+ - cross-validation
+ - pridat nejake poznamky, text pre lepšie pochopenie
+ - samplovat a spravit t-test pre formalny dokaz
+ - mestska funkcna oblast - vyselektovat 15 obcii a pozriet sa na ne
+ - sample na 50% bodov, koeficient B1 neni nulovy, t-test ako dokaz
+ - aka je priemerna vzdialenost bodov od priamky
+ - validiaca - ak 5%, tak je to ok, opačne neni linearna vzdialenost bodov od priamky, outlinery vyhodit

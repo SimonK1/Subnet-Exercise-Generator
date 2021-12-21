@@ -1,0 +1,533 @@
+---
+title: "Zmena stavu obyvateľstva mesta Trnava v závislosti od obcií okresu za obdobie 1993-2020"
+author: 
+  - Erik Matovič
+  - Simon Kokavec
+date: November 2021
+output: 
+  html_notebook:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+---
+
+# Úvod  
+
+V rámci našej práce sa venujeme zmene stavu obyvateľstva krajského mesta Trnava v závislostí od obcií prislúchajúcich okresu Trnava za sledované obdobie od roku 1993 až do roku 2020.  
+
+Dataset sme si vybrali z verejnej databázy Štatistického úradu Slovenskej republiky [DATAcube.](http://datacube.statistics.sk/) Do naších dát sme doplnili:  
+ - vzdialenosť obcí od krajského a okresného mesta Trnava podľa výpočtu trás z Google Maps ako najpoužívanejšieho mapového prostredia
+ - podľa orientácie jednotlivých obcií od Trnavy sme definovali svetové strany v závislosti od mestských častí Trnavy: Trnava-sever, Trnava-juh, Trnava-západ, Trnava-východ.
+
+Zo začiatku je nutné importovanie potrebných knižníc a načítanie datasetu. Na prácu s projektom sme vybrali knižnicu *_tidyverse_*, ktorá poskytujé vhodné nástroje na prácu s dátami. Knižnica *_gmodels_* je použitá pri validácii hypotézy.
+
+```{r}
+library(tidyverse)  
+library(gmodels)
+data <- read_csv("data/dataset.csv")
+```
+
+# Priemerná vzdialenosť obcí od Trnavy  
+
+Priemerná vzdialenosť podľa svetovej strany určuje, ktorá svetová strana má obce vzdialenejšie od Trnavy a, naopak, ktorá svetová strana má obce bližšie k mestu Trnava. K týmto výpočtom sme pridali aj počet obcí, ktoré sa nachádzajú na danej svetovej strane vzhľadom k mestu Trnava.  
+
+```{r}
+averageDistance_nb = data %>%
+  select(`Vzdialenosť od Trnavy(km)`, `Svetová strana od Trnavy`) %>%
+  group_by(`Svetová strana od Trnavy`) %>%
+  summarise(priemerna_vzdialenost=mean(strtoi(`Vzdialenosť od Trnavy(km)`)),
+            pocet_obci=n())
+
+# 4. riadok vynechaný kvôli mestu trnava
+averageDistance_nb[-4,]
+```
+
+Jasne vidíme, že najviac obcií je smerom od mestskej časti Trnavy Trnava-západ a najmenej je zase od mestskej ćasti Trnava-východ. Priemerná vzdialenosť od Trnavy je najnižšia smerom na juh a smeron na sever je opäť najvyššia.
+
+# Prirodzený prírastok a prirodzený úbytok 
+
+V nasledujúcej kapitole sa venujeme prirodzenému prírastku, resp. úbytku, čo znamená, že sa venujeme iba narodeným a zomretým obyvateľom a nie pristaȟovalým a odstaȟovalím obyvateľom.
+
+## Prirodzený prírastok za celé obdobie
+
+Zistenie narodených, zomretých a prirodzený prírastok obyvateľstva za celé skúmané obdobie. V datasete sa stĺpec prirodzený prírastok za daný rok už nachádza, avšak my sme si tieto informácie overili výpočtom cez počet narodených a počet zomretých, aby sme predišli chybám vo výpočtoch v datasete. Tento novovypočítaný údaj *_prirodzený prírastok_* nám hovorí, ktoré obce prirodzene vymierajú a naopak, ktoré obce sa bez uvedenia migrácie rozrastajú.   
+
+```{r}
+naturalBalance_all = data %>%
+  select(1:57, `Vzdialenosť od Trnavy(km)`, `Svetová strana od Trnavy`) %>%
+  mutate(spolu_narodených=rowSums(across(2:29)),
+         spolu_zomretých=rowSums(across(30:57)),
+         spolu_prirodzený_prírastok=spolu_narodených-spolu_zomretých
+         ) %>%
+  select(1, 58, 59, 60, 61, 62) 
+
+naturalBalance_all %>%
+  arrange(`spolu_prirodzený_prírastok`)
+
+```
+Prirodzený úbytok je najväčší v obcii **Križovany nad Dudváhom**, iba 10 kilometrov od Trnavy, orientované na juhu. Najväčší prirodzený prírastok mimo mesta Trnava je v obci **Jaslovské Bohunice**, vzdialené 14 kilometrov od sledovaného mesta, orientované na sever. V Jaslovských Bohuniciach môže byť dôvod nárastu pracovné príležitosti v jadrovej elektrárni. Mesto **Trnava** má najväčší prirodzený prírastok v sledovanom obdobií, takmer dvadsať tisíc narodených obyvateľov a nad päťnásť tisíc obyvateľov zomretých.
+
+## Prirodzený úbytok za celé obdobie
+
+Nakoľko sme si v dátach všimli že prevažná časť obcí z okolia mesta Trnava v skúmanom období pociťuje prirodzený úbytok obyvateľstva, tak sme ich vyfiltrovali a zrátali. 
+
+```{r}
+
+naturalDecrease_all = naturalBalance_all[-0:-2,] %>%
+  filter(spolu_prirodzený_prírastok < 0)
+naturalDecrease_all
+
+```
+## Prirodzene vymierajúce obce
+
+Na základe predchádzajúceho výstupu sme zistili, že z celkového počtu 44 obcí až 34 obcí prirodzene vymiera v okrese Trnava, čo znamená, že až v 34 obciach je prestarnuté obyvateľstvo. Mesto Trnava v tomto pravdepodobne svojou vybavenosťou, predovšetkým školskými zariadeniami a voľnočasovými aktivitami v podobe verejných športovísk a detských ihrísk, je lákavejšie miesto pre život pre novozakladajúce a rozrastajúce sa rodiny.
+
+```{r}
+nrow(naturalDecrease_all)
+```
+
+Na prirodzený úbytok obyvateľstva sme sa pozreli aj podľa počtu vymierajúcich obcí v súlade s jednotlivými svetovými stranami.
+
+```{r}
+dying_muni_total = naturalDecrease_all %>%
+  group_by(`Svetová strana od Trnavy`) %>%
+  summarise(počet_vymierajúcich_obcí=n())
+
+dying_muni_total
+```
+
+Na západe je najviac vymierajúcich obcií, naopak najmenej je ich na východe.
+
+## Priemerný prirodzený prírastok za sledované obdobie na základe svetovej strany
+
+Svetová strana môže ovplyvňovať množstvo faktorov, a preto sme sa rozhodli preskúmať koreláciu svetovej strany s vymieraním obcí hlbšie. Vypočítali sme priemerný prirodzený prírastok resp. úbytok obyvateľstva zoskupených podľa svetovej strany. Všetky svetové strany vykazujú vyrazný pokles v prirodzenom počte obyvateľstva. 
+
+```{r}
+naturalIncrease_all = data %>%
+  select(1:57, `Vzdialenosť od Trnavy(km)`,`Svetová strana od Trnavy`) %>%
+  mutate(spolu_narodených=rowSums(across(2:29)),
+         spolu_zomretých=rowSums(across(30:57)),
+         increase=spolu_narodených-spolu_zomretých
+         ) %>%
+  select(1, `Vzdialenosť od Trnavy(km)`,`Svetová strana od Trnavy`, `increase`) %>%
+  group_by(`Svetová strana od Trnavy`) %>%
+  summarise(priemerný_pokles = mean(`increase`))
+
+naturalIncrease_all <- naturalIncrease_all[-4,]
+naturalIncrease_all
+
+```
+
+Najväčší priemerný prirodzený úbytok obyvateľstva je od mestskej časti Trnava-juh, čo môže byť spôsobené dobrou dostupnosťou na Bratislavu; dostupná je diaľnica D1 a aj želežničná trať; ktorá láka mladé rodiny predovšetkým možnosťami vzdelávania a pracovnými príležitosťami.
+
+Tieto dáta sme vizualizovali na grafe nižšie.
+
+```{r}
+barplot(naturalIncrease_all[["priemerný_pokles"]],ylim=c(-100,0), names.arg=naturalIncrease_all[["Svetová strana od Trnavy"]])
+```
+
+Vypočítané dáta sme spojili do jednej tabuľky pre zvýšenie prehľadnosti. Predpokladali sme, že obce bližšie k mestu Bratislava(juhozápad, v našej metodike klasifikované ako juh) budú mať nižši pokles, avšak táto hypotéza už na prvý pohľad nie je pravdivou nakoľko najnižší pokles má sever okresu Trnava a juh má najväčší prirodzený úbytok. Na druhej strane nás oslovila priemerná vzdialenosť obce od mesta Trnava v spojení s priemerným úbytkom obyvateľstva. Môžeme v tabuľke hneď na prvý pohľad pozorovať, že čím vyššia je priemerná vzdialenosť obcí tým pomalšie vymierajú. 
+
+```{r}
+merge(averageDistance_nb[-4,], naturalIncrease_all)
+```
+
+## Hypotéza: Obce vzdialenejšie od mesta Trnava vymierajú pomalšie
+
+### Rozdelenie obcí na kvantily podľa vzdialenosti obcí od mesta Trnava
+
+Hypotéza si žiada rozdelenie vymierajúcích obcií do 4 kvantilov podľa vzdialenosti od mesta Trnava. Prvý kvantil reprezentuje obce najbližšie k mestu a štvrtý najďalej.  
+
+```{r}
+
+temporary_nb=data[-1,"Vzdialenosť od Trnavy(km)"]
+quantile_values=quantile(strtoi(temporary_nb[["Vzdialenosť od Trnavy(km)"]]))
+
+
+naturalBalance_quantiled = naturalBalance_all %>% 
+  mutate(quantile=(ifelse(strtoi(`Vzdialenosť od Trnavy(km)`) <= quantile_values[2] , 1,
+                   ifelse(strtoi(`Vzdialenosť od Trnavy(km)`) > quantile_values[2] & strtoi(`Vzdialenosť od Trnavy(km)`) <= quantile_values[3],2,
+                   ifelse(strtoi(`Vzdialenosť od Trnavy(km)`)>quantile_values[3] & strtoi(`Vzdialenosť od Trnavy(km)`) < quantile_values[4],3,4))))) %>% 
+  filter(spolu_prirodzený_prírastok < 0)
+
+naturalBalance_quantiled
+
+```
+
+Tieto rozkvantilované dáta sme sa rozhodli rozdeliť do samostatných dataframov podľa kvantilu pre vyššiu prehľadnosť.  
+
+```{r}
+quantiled_data_splited=split(naturalBalance_quantiled[-0:-2,], naturalBalance_quantiled[-0:-2,]$quantile)
+quantiled_data_splited
+```
+
+### Zavislosť vzdialenosti od Trnavy s prirodzeným prírastkom
+
+**Lineárnu regresiu** sme sa rozhodli použiť pre všetky dáta a pre tento výpočet zanedbať kvantili a pracovať iba so samotnou vzialenosťou.
+
+```{r}
+
+distance_nb = strtoi(naturalBalance_quantiled[-0:-2,]$`Vzdialenosť od Trnavy(km)`)
+increase_nb = naturalBalance_quantiled[-0:-2,]$`spolu_prirodzený_prírastok`
+
+fit_nb <- lm(increase_nb ~  distance_nb , data=naturalBalance_quantiled[-0:-2,])
+
+plot(
+  distance_nb,
+  increase_nb,
+  xlab = "vzdialenosť od TT (km)",
+  ylab = "prirodzený úbytok",
+  col="red",  
+  pch=16,
+  abline(fit_nb),
+  main = "Prirodzený úbytok v závislosti od vzdialenosti obce od mesta Trnava",
+  
+)
+
+```
+
+Z grafu môžeme jasne vidieť, že naša hypotéza vyzerá byť pravdivá. Môžeme pozorovať lineárnu závislosť, ktorá hovorí o narastajúcej vzdialenosti spolu s klesajúcim úbytkom.
+
+### Krížová validácia  
+
+Následne sme sa rozhodli vykonať krížovú validáciu a overiť výsledky.
+
+```{r}
+
+data_sample <- map(1:40, ~naturalBalance_quantiled[sort(sample(1:dim(naturalBalance_quantiled)[1], size = 0.5*dim(naturalBalance_quantiled)[1])),])
+models <- map(data_sample, ~lm(.x$`Vzdialenosť od Trnavy(km)` ~ .x$`spolu_prirodzený_prírastok` ))
+listOfFunctions <- list(coefficients= coef, residuals = residuals)
+f <- function(x) {sapply(listOfFunctions, function(g) g(x))}
+extractedData <- map(models, ~f(.x))
+
+
+sd(map_dbl(models, ~coef(.x)[1]))
+sd(map_dbl(models, ~coef(.x)[2]))
+
+rss <- map_dbl(models, ~ sum(resid(.x)^2))
+rse <- map_dbl(rss, ~sqrt(.x/(0.5*dim(naturalBalance_quantiled)[1]-2)))
+
+boxplot(rss)
+boxplot(rse)
+```
+Na základe *_t-testu_* a nízkej hodnoty **p-value** konštatujeme valídnosť modelu.
+
+```{r}
+
+cfs <- map_dbl(models, ~ coef(.x)[2])
+t.test(cfs, mu=0)
+
+```
+### Prirodzený úbytok pre jednotlivé kvantily
+
+Tento istý test sme sa rozhodli vykonať pre jednotlivé kvantily a vykonať pre každý kvantil zvlášť lineárnu regresiu.
+
+#### Prirodzený úbytok pre kvantil 1
+
+```{r}
+
+temp=quantiled_data_splited[1]
+
+fit_nb_q1 <- lm(temp[[1]]$`spolu_prirodzený_prírastok` ~  strtoi(temp[[1]]$`Vzdialenosť od Trnavy(km)`) , data=temp)
+
+plot(
+  temp[[1]]$`Vzdialenosť od Trnavy(km)`,
+  temp[[1]]$`spolu_prirodzený_prírastok`,
+  xlab = "vzdialenosť od TT",
+  ylab = "Prirodzený úbytok",
+  abline(fit_nb_q1),
+  col="red",  
+  pch=16,
+  main = "Prirodzený úbytok pre Kvantil 1",
+)
+
+```
+
+#### Prirodzený úbytok pre kvantil 2
+
+```{r}
+
+temp=quantiled_data_splited[2]
+
+fit_nb_q2 <- lm(temp[[1]]$`spolu_prirodzený_prírastok` ~  strtoi(temp[[1]]$`Vzdialenosť od Trnavy(km)`) , data=temp)
+
+plot(
+  temp[[1]]$`Vzdialenosť od Trnavy(km)`,
+  temp[[1]]$`spolu_prirodzený_prírastok`,
+  xlab = "vzdialenosť od TT",
+  ylab = "Prirodzený úbytok",
+  abline(fit_nb_q2),
+  col="red",  
+  pch=16,
+  main = "Prirodzený úbytok pre Kvantil 2",
+)
+
+```
+
+#### Prirodzený úbytok pre kvantil 3
+
+```{r}
+
+temp=quantiled_data_splited[3]
+
+fit_nb_q3 <- lm(temp[[1]]$`spolu_prirodzený_prírastok` ~  strtoi(temp[[1]]$`Vzdialenosť od Trnavy(km)`) , data=temp)
+
+plot(
+  temp[[1]]$`Vzdialenosť od Trnavy(km)`,
+  temp[[1]]$`spolu_prirodzený_prírastok`,
+  xlab = "vzdialenosť od TT",
+  ylab = "Prirodzený úbytok",
+  abline(fit_nb_q3),
+  col="red",  
+  pch=16,
+  main = "Prirodzený úbytok pre Kvantil 3",
+)
+
+```
+
+#### Prirodzený úbytok pre kvantil 4
+
+```{r}
+
+# Tento graf je veľmi zaujímavý nakoľko ide naopak ako ostatné
+temp=quantiled_data_splited[4]
+
+fit_nb_q4 <- lm(temp[[1]]$`spolu_prirodzený_prírastok` ~  strtoi(temp[[1]]$`Vzdialenosť od Trnavy(km)`) , data=temp)
+
+plot(
+  temp[[1]]$`Vzdialenosť od Trnavy(km)`,
+  temp[[1]]$`spolu_prirodzený_prírastok`,
+  xlab = "vzdialenosť od TT",
+  ylab = "Prirodzený úbytok",
+  abline(fit_nb_q4),
+  col="red",  
+  pch=16,
+  main = "Prirodzený úbytok pre Kvantil 4",
+)
+
+```
+Z tohoto pozorovania môžeme usúdiť že naša hypotéza je vo všobecnosti pravdivá, avšak posledný kvantil ukazuje že obce vzdialené viac ako 15 kilometrov budú nasledovať opačný trend. Tieto obce začnú vymierať rýchlejšie ako obce ktoré sú vo vzdialenosti do 15 kilometrov od mesta Trnava.  
+
+# Migrácia
+
+V ďalšej časti práce sa pozrieme na prisťahovaných a odsťahovaných obyvateľov.
+
+## Migrácia za sledované obdobie  
+
+Zistenie pristahovanych, odstahovanych a celkove migracne saldo za cele obdobie zoradené od najväčšieho migračného salda, matematicky vyjadrené ako rozdiel medzi prisťahovanými a odsťahovanými obyvateľmi. 
+
+```{r}
+migration_all = data %>%
+  mutate(spolu_pristahovanych = rowSums(across(86:112)),
+         spolu_odstahovanych = rowSums(across(113:139)),
+         spolu_saldo = rowSums(across(140:166)),
+         spolu_celkovy_prirastok = rowSums(across(167:193))) %>%
+  select(1, 194:198) %>%
+  arrange(spolu_saldo)
+
+# remove last row, because it is NA
+migration_all <- migration_all[1:(dim(migration_all)[1] - 1),]
+migration_all
+```
+Z uvedeného je vidieť, že mesto **Trnava** má najväčší migračný úbytok za sledované obdobie, pričom obec **Biely Kostol**, vzdialená 4 kilometre od Trnavy, má najväčší migračný prírastok. Mimo samotného mesta je je obec **Naháč** obcou, odkiaľ sa za posledné obdobie najviac ľudí vysťahovalo, avšak jedná sa o zanedbateľné množstvo - 14 ľudí za celé obdobie.
+
+## Obce, kde je kladné migračné saldo  
+
+Zistenie prisťahovaných do obcií za sledované obdobie.
+
+```{r}
+migration_all %>%
+  select(1, `Vzdialenosť od Trnavy(km)`, spolu_saldo) %>%
+  filter(`Vzdialenosť od Trnavy(km)` != 'x') %>%
+  arrange(desc(`spolu_saldo`))
+```
+Najväčší nárast obyvateľov migračným saldom je v obciach **Biely Kostol** vzdialenej 4 kilometre od mesta, **Špačince** vzdialenej 9 kilometre od mesta a obce **Zavar** vzdialenej 8 kilometrov od Trnavy. Vo všetkých obciach je v posledných rokoch značná individuálna bytová výstavba, v obcii Zavar je aj rozšírený automobilový priemysel, v blízkosti je Stellantis Slovakia. 
+
+## Obce, kde je záporné migračné saldo  
+
+Zistenie odsťahovaných z obcií za sledované obdobie - iba tie obce, kde sa obyvatelia "vysťahovavaju".
+
+```{r}
+odstahovany_all = migration_all %>%
+  filter(spolu_saldo < 0)
+odstahovany_all
+```
+
+Z uvedenej tabuľky vyplýva, že v celom okrese Trnava je okrem Trnavy len Naháč a Horná Krupá so záporným migračným saldom, môžeme vidieť, že obe vidiecke obce disponujú väčšou vzdialenosťou a to v rozsahu okolo 20 kilometrov od mesta Trnava.
+
+```{r}
+data %>%
+  select(1, `Vzdialenosť od Trnavy(km)`) %>%
+  filter(`Vzdialenosť od Trnavy(km)` != 'x') %>%
+  arrange(desc(strtoi(`Vzdialenosť od Trnavy(km)`)))
+```
+Z uvedenej tabuĺky vyplýva, že obec **Naháč** aj **Horná Krupá** patria do prvej desiatky najvzdialenejších obcií od mesta Trnava.
+
+
+```{r}
+odstahovany_muni_total = odstahovany_all %>%
+  group_by(`Svetová strana od Trnavy`) %>%
+  summarise(odstahovany_municipalities=n())
+odstahovany_muni_total
+```
+
+Vidíme, že iba severná oblasť okresu okrem Trnavy zažíva záporné migračné saldo, a teda sa viac obyvateľov za sledované obdobie odsahovalo ako prisťahovalo. 
+
+## Priemerné migračné saldo za sledované obdobie  
+
+Zistenie nárastu populácie s migračným saldom podľa svetových stran.
+
+```{r}
+saldo_mean_direction = migration_all %>%
+  filter(`Svetová strana od Trnavy` != 'x') %>%
+  group_by(`Svetová strana od Trnavy`) %>%
+  summarise(mean_spolu_saldo = mean(`spolu_saldo`))
+saldo_mean_direction
+```
+
+Napriek Naháču a Hornej Krupej, obe vidiecke obce na severe, je severná oblasť s kladným migračným saldom, avśak zo vśetkých svetových strán je tam najmenší nárast populácie.
+
+Vizualizácia pomocou grafu typu **barplot**:  
+
+```{r}
+max_saldo_mean = max(saldo_mean_direction['mean_spolu_saldo'])
+barplot(
+  saldo_mean_direction[["mean_spolu_saldo"]],ylim=c(0, max_saldo_mean + 100), 
+  names.arg=saldo_mean_direction[["Svetová strana od Trnavy"]]
+  )
+
+```
+
+## Hypotéza: Čím väčšia vzdialenosť od mesta Trnava, tým nižšie migračné saldo  
+
+Ako ďalšiu hypotézu sme sa rozhodli pozrieť sa iba na vidiecke obce okresu Trnava, t.j. všetky obce mimo mesta Trnava, a overiť, že blízkosť obce Trnavy ponúka priľahlým vidieckym obciam výhodu, a teda so vzdialenosťou obce od mesta bude migračné saldo klesajúce.
+
+
+```{r}
+tt_spolu_saldo = migration_all[1,n_col]
+tt_spolu_saldo
+```
+
+Z mesta Trnava sa v sledovanom obdobií odsťahovalo vyše osem tisíc obyvateľov. Vzhľadom na záporné migračné saldo Trnavy, ktoré je najvyššie v celom okrese, a okrem obce Naháč a Horná Krupá nie sú v okrese žiadne iné obce so záporným migračným saldom, sme sa rozhodli pozrieť na celkový nárast obyvateľov v obciach s kladným migračným saldom.
+
+
+```{r}
+sum_saldo = migration_all %>% 
+  filter(spolu_saldo > 0) %>%
+  summarise(sum(spolu_saldo))
+sum_saldo
+```
+Tento celkový nárast predstavuje vyššie číslo ako počet odsťahovaných z Trnavy.
+
+```{r}
+sum_saldo + tt_spolu_saldo
+```
+Rozdiel celkového súčtu prírastku obyvateľov v obciach s kladným migračným saldom oproti zápornému migračnému saldu Trnavy predstavuje kladné číslo nad šesť tisíc, čo znamená, že celkovo do okresu sa viac ľudí prisťahovalo ako odsťahovalo.
+
+### Migračne saldo za sledované obdobie v zavislosti od vzdialenosti od TT  
+
+Aj v tomto prípade sme sa rozhodli opäť pouźi model s **lineárnou regresiou**.
+
+```{r}
+n_row = dim(migration_all)[1] # number of rows
+n_col = dim(migration_all)[2] # number of cols
+
+distance = strtoi(migration_all[[2]][2:n_row]) # take x as distance apart from TT
+saldo = strtoi(migration_all[[n_col]][2:n_row]) # take y as migracne saldo aparto from TT
+
+fit_migration <- lm(saldo ~ distance, data=migration_all)
+
+plot(
+  x=distance,      
+  y=saldo,  
+  xlab = "vzdialenosť od TT (km)",
+  ylab = "migračné saldo",
+  col="red",  # nastavenie farby bodiek
+  pch=16,      # vyfarbenie bodiek
+  main = "Migračne saldo za sledované obdobie v zavislosti od vzdialenosti od TT",
+  abline(fit_migration)   # add best fit line in graph
+  )
+```
+
+### Krížová validácia
+
+#### Generovanie n_row náhodnych subsetov z 50% riadkov z tabuľky
+
+```{r}
+migration_all_n_subset <- map(1:n_row/2, ~migration_all[sort(sample(1:n_row, size=0.5*n_row)),])
+#migration_all_n_subset
+```
+
+#### Nafitovanie modelu lineárnej regresie na každý z našich subsetov
+
+```{r}
+#distance_model = map(migration_all, ~ )
+
+migration_all_models <- map(migration_all_n_subset, ~lm(strtoi(.x[[2]][2:n_row]) ~ strtoi(.x[[n_col]][2:n_row])))
+# migration_all_models[1]
+```
+
+#### Extrahovanie B koeficientov a reziduálov z každého modelu
+
+```{r}
+# bind data function
+f_bind_data <- function(x, y)
+{
+  sapply(y, function(g) g(x))
+}
+
+# list of b coef and residuals from model fitting
+migration_all_coef_list <- list(b_coefficients = coef, residuals = residuals)
+
+# iterate over list of data
+migration_all_extracted_data = map(migration_all_models, ~f_bind_data(.x, migration_all_coef_list))
+
+# migration_all_extracted_data[1]
+```
+
+#### Výpočet štandardnej odchýlky
+
+```{r}
+library(gmodels)
+sd(map_dbl(migration_all_models, ~coef(.x)[1])) # sd of intercept values
+sd(map_dbl(migration_all_models, ~coef(.x)[2])) # sd of slope values
+```
+#### Výpočet standard error of residual sum of squares (RSS) a residual mean square error (RMSE) pre každý set
+
+```{r}
+migration_all_rss <- map_dbl(migration_all_models, ~sum(resid(.x)^2))
+migration_all_rse <- map_dbl(migration_all_rss, ~sqrt(.x/(0.5*n_row-2)))
+boxplot(migration_all_rss)
+boxplot(migration_all_rse)
+```
+
+#### t test
+
+```{r}
+migration_all_cfs <- map_dbl(migration_all_models, ~coef(.x)[2])
+t.test(migration_all_cfs, mu=0)
+```
+
+# Záver  
+
+V našej práci sme sa venovali krajskému a okresnému mestu Trnava a predovšetkým závislostí obcií trnavského okresu od mesta.  
+
+Z migrácie obyvateľstva za sledované obdobie sme zistili:
+ - do okresu Trnava sa viac ľudí prisťahovalo ako odsťahovalo
+ - z Trnavy sa viac ľudí odsťahovalo ako prisťahovalo,
+ - obce Naháč a Horná Krupá sú jediné vidiecke obce, ktoré javia záporné migračné saldo, obe obce sú v severnom kvadrante od mesta, avšak migračné saldo je zanedbateľné oproti mestu Trnava
+ - všetky ostatné obce mimo Trnavy, Naháča a Hornej Krupej javia nárast obyvateľstva z hľadiska migrácie
+ - najväčší nárast obyvateľstva migračným saldom je v obciach Biely Kostol, Špačince a Zavar, tieto obce nie su viac ako 9 kilometrov vzdialené od Trnavy, spomínané obce sú aj súčasťou mestskej funkčnej oblasti mesta Trnava, čo znamená, źe viac ako 50% obyvateľov daných obcií denne dochádza do mesta Trnava
+ - model lineárnej regresie overený krížovou validáciu ukázal, že so zvyšujúcou sa vzdialenosťou obce od mesta Trnava klesá aj migračné saldo  
+ 
+Z prirodzeného prírastku za sledované obdobie sme zistili:
+ - Trnava ako mesto nevymiera, naopak viac obyvateľov sa v meste rodí ako zomiera
+ - väčšina obcií v okrese zažíva prirodzený úbytok obyvateľstva
+ - najväčší prirodzený prírastok je v meste Trnava, druhý najväčší je v obcii Jaslovské Bohunice, ktoré sú známe jadrovou elektrárňou, a teda aj pracovnými príležitosťami v obcii
+ - pomocou lineaárnej regresie overenej krížovou validáciou bolo zistené, že so zvyšujúcou sa vzdialenosťou od mesta Trnava sa prirodzený úbytok pomaly znižuje
+ - lineárna regresia aplikovaná na jednotlivé vzdialenostné sektory ukázala opačný trend pri obciach vzdialených viac ako 15km od mesta Trnava - prirodzený úbytok začína opäť narastať
+
+Interpretácie správania obyvateľstva nie sú jednoduché, ale použitím štatistických metód sa nám podarilo ukázať, že ľudia hľadajú dostupnosť vidieckeho bývania, avšak chcú si zachovať mestský charakter a predovšetkým služby mesta ako dostupnosť vzdelávacích inštitúcií a pracovných príležitostí, pretože mestá pre ľudí figurujú ako kultúrne, športové, vzdelávacie a pracovné centrá.
