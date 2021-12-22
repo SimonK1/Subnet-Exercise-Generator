@@ -1,0 +1,1690 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     72867,       1682]
+NotebookOptionsPosition[     72335,       1664]
+NotebookOutlinePosition[     72775,       1681]
+CellTagsIndexPosition[     72732,       1678]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Funkcia", " ", "pre", " ", "generovanie", " ", "zadania"}], 
+   "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"RandomNum", "[", "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "thirdOctet", ",", "ipPrint", ",", "mask", ",", "subnets", ",", "N1", 
+        ",", "N2", ",", "N3", ",", "N4", ",", "PC1", ",", "PC2", ",", "PC3", 
+        ",", "PC4", ",", "solution", ",", "step", ",", "unsortedSubnets"}], 
+       "}"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"thirdOctet", " ", "=", " ", 
+        RowBox[{"Power", "[", 
+         RowBox[{
+          RowBox[{"RandomChoice", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "2"}], "}"}], "]"}], ",", " ", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", " ", "7"}], "}"}], "]"}]}], "]"}]}], ";", 
+       RowBox[{"ipPrint", "=", 
+        RowBox[{
+         RowBox[{"ToString", "[", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "255"}], "}"}], "]"}], "]"}], ".", 
+         RowBox[{"ToString", "[", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "255"}], "}"}], "]"}], "]"}], ".", 
+         RowBox[{"ToString", "[", "thirdOctet", "]"}], ".", 
+         RowBox[{"ToString", "[", "0", "]"}]}]}], ";", 
+       RowBox[{"mask", "=", 
+        RowBox[{"RandomInteger", "[", 
+         RowBox[{"{", 
+          RowBox[{"10", ",", "18"}], "}"}], "]"}]}], ";", 
+       RowBox[{"subnets", "=", 
+        RowBox[{"List", "[", 
+         RowBox[{
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"5", ",", "20"}], "}"}], "]"}], ",", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"50", ",", "100"}], "}"}], "]"}], ",", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"1000", ",", "3000"}], "}"}], "]"}], ",", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"3000", ",", "5000"}], "}"}], "]"}]}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{
+         RowBox[{"N1", "=", 
+          RowBox[{"RandomChoice", "[", "subnets", "]"}]}], ";", 
+         RowBox[{"subnets", "=", 
+          RowBox[{"DeleteCases", "[", 
+           RowBox[{"subnets", ",", "N1"}], "]"}]}], ";", 
+         RowBox[{"N2", "=", 
+          RowBox[{"RandomChoice", "[", "subnets", "]"}]}], ";", 
+         RowBox[{"subnets", "=", 
+          RowBox[{"DeleteCases", "[", 
+           RowBox[{"subnets", ",", "N2"}], "]"}]}], ";", 
+         RowBox[{"N3", "=", 
+          RowBox[{"RandomChoice", "[", "subnets", "]"}]}], ";", 
+         RowBox[{"subnets", "=", 
+          RowBox[{"DeleteCases", "[", 
+           RowBox[{"subnets", ",", "N3"}], "]"}]}], ";", 
+         RowBox[{"N4", "=", 
+          RowBox[{"RandomChoice", "[", "subnets", "]"}]}], ";"}], "*)"}], 
+       "\[IndentingNewLine]", 
+       RowBox[{"N1", "=", 
+        RowBox[{"subnets", "[", 
+         RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+       RowBox[{"N2", "=", 
+        RowBox[{"subnets", "[", 
+         RowBox[{"[", "2", "]"}], "]"}]}], ";", 
+       RowBox[{"N3", "=", 
+        RowBox[{"subnets", "[", 
+         RowBox[{"[", "3", "]"}], "]"}]}], ";", 
+       RowBox[{"N4", "=", 
+        RowBox[{"subnets", "[", 
+         RowBox[{"[", "4", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"subnets", "=", 
+        RowBox[{"Sort", "[", 
+         RowBox[{"List", "[", 
+          RowBox[{"N1", ",", "N2", ",", "N3", ",", "N4"}], "]"}], "]"}]}], 
+       ";", "\[IndentingNewLine]", 
+       RowBox[{"unsortedSubnets", "=", 
+        RowBox[{"List", "[", 
+         RowBox[{"N1", ",", "N2", ",", "N3", ",", "N4"}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"PC1", "=", 
+        RowBox[{"RandomInteger", "[", 
+         RowBox[{"{", 
+          RowBox[{"2", ",", "5"}], "}"}], "]"}]}], ";", 
+       RowBox[{"PC2", "=", 
+        RowBox[{"RandomInteger", "[", 
+         RowBox[{"{", 
+          RowBox[{"5", ",", "10"}], "}"}], "]"}]}], ";", 
+       RowBox[{"PC3", "=", 
+        RowBox[{"RandomInteger", "[", 
+         RowBox[{"{", 
+          RowBox[{"100", ",", "255"}], "}"}], "]"}]}], ";", 
+       RowBox[{"PC4", "=", 
+        RowBox[{"RandomInteger", "[", 
+         RowBox[{"{", 
+          RowBox[{"255", ",", "257"}], "}"}], "]"}]}], ";", 
+       RowBox[{"solution", "=", "\"\<Solution is hidden\>\""}], ";", 
+       RowBox[{"step", "=", "1"}], ";", 
+       RowBox[{"{", 
+        RowBox[{
+        "ipPrint", ",", "mask", ",", "subnets", ",", "N1", ",", "N2", ",", 
+         "N3", ",", "N4", ",", "PC1", ",", "PC2", ",", "PC3", ",", "PC4", ",",
+          "solution", ",", "step", ",", "unsortedSubnets"}], "}"}]}]}], 
+     "]"}]}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{
+     "Funckia", " ", "pre", " ", "priratanie", " ", 
+      "\[DHacek]al\[SHacek]\[IAcute]ch", " ", "adries", " ", "k", " ", 
+      "zoznamu", " ", "adries"}], ",", " ", 
+     RowBox[{
+      RowBox[{"napr", ".", " ", "pridanie"}], " ", "network"}], ",", " ", 
+     RowBox[{
+     "broadcast", " ", "addreass", " ", "a", " ", "default", " ", 
+      "gateway"}]}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"AddAddresses", "[", 
+      RowBox[{"subnets_", ",", " ", "number_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"Map", "[", 
+      RowBox[{
+       RowBox[{"Function", "[", 
+        RowBox[{"x", ",", 
+         RowBox[{"x", "+", "number"}]}], "]"}], ",", "subnets"}], "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Funckia", " ", "pre", " ", "n\[AAcute]jdenie", " ", 
+     "najbli\[ZHacek]\[SHacek]ieho", " ", "exponentu"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"NextPowerOfTwo", "[", "x_", "]"}], " ", ":=", " ", 
+     RowBox[{"Ceiling", "[", 
+      RowBox[{"RealExponent", "[", 
+       RowBox[{"x", ",", " ", "2"}], "]"}], "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Funkcia", " ", "pre", " ", "zistenie", " ", "host", " ", "\[CHacek]asti",
+      " ", "podsiete", " ", "pre", " ", "ka\[ZHacek]d\[UAcute]", " ", 
+     "podsiet"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FindHostPortion", "[", "subnets_", "]"}], " ", ":=", " ", 
+     RowBox[{"Map", "[", 
+      RowBox[{"NextPowerOfTwo", ",", " ", "subnets"}], "]"}]}], ";"}], "\n", 
+   "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{
+     "Funkcia", " ", "pre", " ", "najdenie", " ", "masiek", " ", "podsieti", 
+      " ", "pre", " ", "vsetky", " ", "nase", " ", "podsiete"}], ",", " ", 
+     RowBox[{"kazda", " ", "maska", " ", "sa", " ", "urcuje", " ", 
+      RowBox[{"naslevodne", ":", " ", 
+       RowBox[{
+        RowBox[{"pocet", " ", "bitov", " ", "IPv4", " ", "adresy", 
+         RowBox[{"(", "32", ")"}]}], " ", "-", " ", 
+        RowBox[{"host", " ", "portion", " ", "podsiete"}]}]}]}]}], "*)"}], 
+   "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FindSubnetMasks", "[", "hosts_", "]"}], " ", ":=", " ", 
+     RowBox[{"Map", "[", 
+      RowBox[{
+       RowBox[{"Function", "[", 
+        RowBox[{"x", ",", 
+         RowBox[{"32", "-", "x"}]}], "]"}], ",", " ", "hosts"}], "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Z\[AAcute]sobn\[IAcute]k", " ", "pre", " ", "dynamick\[EAcute]", " ", 
+     "hodnoty"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"zasobnik", "=", 
+     RowBox[{"RandomNum", "[", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Z\[AAcute]sobn\[IAcute]k", " ", "pre", " ", "step", " ", "by", " ", 
+     "step", " ", "solution"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"zasobnikStep", "=", 
+     RowBox[{"GenerateSteps", "[", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Funkcia", " ", "pre", " ", "naplnenie", " ", 
+     "z\[AAcute]sobn\[IAcute]ka"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"CreateStack", "[", "]"}], ":=", 
+     RowBox[{"zasobnik", "=", 
+      RowBox[{"RandomNum", "[", "]"}]}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Funkcia", " ", "pre", " ", "naplnenie", " ", "step", " ", "by", " ", 
+     "step", " ", "z\[AAcute]sobn\[IAcute]ka"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"CreateStepStack", "[", "]"}], ":=", 
+     RowBox[{"zasobnikStep", "=", 
+      RowBox[{"GenerateSteps", "[", "]"}]}]}], ";"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Funkcia", " ", "pre", " ", "najdenie", " ", "vsetkych", " ", "rozsahov", 
+     " ", "IP", " ", "adries"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FindRange", "[", 
+      RowBox[{
+      "hosts_", ",", "subnetMasks_", ",", " ", "networkAddress_", ",", 
+       "index_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "ipv4Address1", ",", " ", "ipv4Address2", ",", " ", "ipv4Address3", 
+         ",", " ", "ipv4Address4", ",", " ", "ipv4Network", ",", " ", 
+         "ipv4Broadcast", ",", " ", "ipv4New", " ", ",", " ", 
+         "ipv4NewAddress3", ",", " ", "ipv4NewAddress4"}], "}"}], ",", " ", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"ipv4Network", " ", "=", " ", "networkAddress"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4Address1", "=", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"networkAddress", "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4Address2", "=", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"networkAddress", "[", 
+           RowBox[{"[", "2", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4Address3", "=", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"networkAddress", "[", 
+           RowBox[{"[", "3", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4Address4", "=", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"networkAddress", "[", 
+           RowBox[{"[", "4", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4NewAddress3", " ", "=", " ", "ipv4Address3"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4NewAddress4", " ", "=", " ", "ipv4Address4"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"exponent", " ", "=", " ", 
+         RowBox[{"24", " ", "-", " ", 
+          RowBox[{"subnetMasks", "[", 
+           RowBox[{"[", "index", "]"}], "]"}]}]}], ";", "\n", 
+        "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Mod", "[", 
+            RowBox[{
+             RowBox[{"Power", "[", 
+              RowBox[{"2", ",", 
+               RowBox[{"hosts", "[", 
+                RowBox[{"[", "index", "]"}], "]"}]}], "]"}], ",", " ", 
+             "256"}], "]"}], " ", "==", " ", "0"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"Power", "[", 
+                 RowBox[{"2", ",", " ", "exponent"}], "]"}], " ", "+", " ", 
+                "ipv4Address3"}], ")"}], " ", ">", " ", "255"}], ")"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"ipv4Address2", "++"}], ";", "\[IndentingNewLine]", 
+              RowBox[{"ipv4Address3", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"Power", "[", 
+                   RowBox[{"2", ",", " ", "exponent"}], "]"}], " ", "+", " ", 
+                  "ipv4Address3"}], ")"}], " ", "-", " ", "256"}]}]}], "}"}], 
+            ",", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"ipv4Address3", " ", "=", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"Power", "[", 
+                  RowBox[{"2", ",", " ", "exponent"}], "]"}], " ", "+", " ", 
+                 "ipv4Address3", " ", "-", " ", "1"}], " ", ")"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"ipv4Address4", " ", "=", " ", "255"}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"ipv4NewAddress3", " ", "=", " ", 
+               RowBox[{"ipv4Address3", " ", "+", " ", "1"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"ipv4NewAddress4", " ", "=", " ", "0"}]}], "}"}]}], 
+           "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"Power", "[", 
+                 RowBox[{"2", ",", " ", 
+                  RowBox[{"hosts", "[", 
+                   RowBox[{"[", "index", "]"}], "]"}]}], "]"}], " ", "+", " ",
+                 "ipv4Address4"}], ")"}], " ", ">", " ", "255"}], ")"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"ipv4Address3", "++"}], ";", "\[IndentingNewLine]", 
+              RowBox[{"ipv4Address4", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"Power", "[", 
+                   RowBox[{"2", ",", " ", 
+                    RowBox[{"hosts", "[", 
+                    RowBox[{"[", "index", "]"}], "]"}]}], "]"}], " ", "+", 
+                  "ipv4Address4"}], ")"}], "  ", "-", " ", "256"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"ipv4NewAddress4", " ", "=", " ", 
+               RowBox[{"ipv4Address4", " ", "+", " ", "1"}]}]}], "}"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"ipv4Address4", " ", "=", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"Power", "[", 
+                  RowBox[{"2", ",", " ", 
+                   RowBox[{"hosts", "[", 
+                    RowBox[{"[", "index", "]"}], "]"}]}], "]"}], " ", "+", 
+                 " ", "ipv4Address4", "  ", "-", " ", "1"}], ")"}]}], " ", 
+              ";", "\[IndentingNewLine]", 
+              RowBox[{"ipv4NewAddress4", " ", "=", " ", 
+               RowBox[{"ipv4Address4", " ", "+", " ", "1"}]}]}], "}"}]}], 
+           "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}], ";", 
+        " ", "\[IndentingNewLine]", " ", 
+        RowBox[{"ipv4Broadcast", "=", 
+         RowBox[{"Dot", "[", 
+          RowBox[{
+          "ipv4Address1", ".", "ipv4Address2", ".", "ipv4Address3", ".", 
+           "ipv4Address4"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"ipv4New", " ", "=", " ", 
+         RowBox[{"Dot", "[", 
+          RowBox[{
+          "ipv4Address1", ".", "ipv4Address2", ".", "ipv4NewAddress3", ".", 
+           "ipv4NewAddress4"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{"ipv4Network", ",", "ipv4Broadcast", " ", ",", "ipv4New"}], 
+         "}"}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{
+     "Funkcia", " ", "na", " ", "najdenie", " ", "IP", " ", "adries", " ", 
+      "pre", " ", "zariadenia", " ", "smerovacov"}], ",", " ", 
+     RowBox[{
+     "kedy", " ", "kazdy", " ", "smerovac", " ", "ma", " ", "3", " ", 
+      "adresy"}]}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FindRouter", "[", 
+      RowBox[{
+      "ipRange1_", ",", " ", "ipRange2_", ",", " ", "ipRange3_", ",", " ", 
+       "index_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "ipv4Add1", ",", " ", "ipv4Add2", ",", " ", "ipv4Add3", ",", "s0", 
+         ",", " ", "g0", ",", " ", "g1"}], "}"}], ",", " ", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"ipv4Add1", " ", "=", " ", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"ipRange1", "[", 
+           RowBox[{"[", "4", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", " ", 
+        RowBox[{"ipv4Add2", " ", "=", " ", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"ipRange2", "[", 
+           RowBox[{"[", "4", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4Add3", " ", "=", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"ipRange3", "[", 
+           RowBox[{"[", "4", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"index", " ", "==", " ", "1"}], ",", 
+          RowBox[{"ipv4Add3", "++"}], ",", 
+          RowBox[{"ipv4Add3", " ", "+=", " ", "2"}]}], "]"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4Add1", "++"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"ipv4Add2", "++"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"g0", " ", "=", " ", 
+         RowBox[{"Dot", "[", 
+          RowBox[{
+           RowBox[{"ipRange1", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ".", 
+           RowBox[{"ipRange1", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], ".", 
+           RowBox[{"ipRange1", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], ".", "ipv4Add1"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"g1", " ", "=", " ", 
+         RowBox[{"Dot", "[", 
+          RowBox[{
+           RowBox[{"ipRange2", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ".", 
+           RowBox[{"ipRange2", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], ".", 
+           RowBox[{"ipRange2", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], ".", "ipv4Add2"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"s0", " ", "=", " ", 
+         RowBox[{"Dot", "[", 
+          RowBox[{
+           RowBox[{"ipRange3", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ".", 
+           RowBox[{"ipRange3", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], ".", 
+           RowBox[{"ipRange3", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], ".", "ipv4Add3"}], " ", "]"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{"s0", ",", " ", "g0", ",", " ", "g1"}], "}"}]}]}], "]"}]}], 
+    ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Funkcia", " ", "na", " ", "najdenie", " ", "IP", " ", "adries", " ", 
+     "pre", " ", "koncov\[EAcute]", " ", "zariadenia"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FindPC", "[", 
+      RowBox[{"networkAddress_", ",", " ", "pc_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "ipv4Address", ",", " ", "ipAddress3", ",", " ", "ipAddress4"}], 
+        "}"}], ",", " ", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"ipAddress3", "=", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"networkAddress", "[", 
+           RowBox[{"[", "3", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipAddress4", "=", 
+         RowBox[{"ToExpression", "[", 
+          RowBox[{"networkAddress", "[", 
+           RowBox[{"[", "4", "]"}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"pc", ">", "255"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"ipAddress3", "++"}], ";", 
+            RowBox[{"ipAddress4", " ", "=", " ", 
+             RowBox[{"pc", " ", "-", " ", "256"}]}]}], "}"}], ",", " ", 
+          RowBox[{"ipAddress4", "+=", "pc"}]}], "]"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipv4Address", " ", "=", " ", 
+         RowBox[{"Dot", "[", 
+          RowBox[{
+           RowBox[{"networkAddress", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ".", 
+           RowBox[{"networkAddress", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], ".", "ipAddress3", ".", 
+           "ipAddress4"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"{", "ipv4Address", "}"}]}]}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Funkcia", " ", "pre", " ", "vygenerovanie", " ", "step", " ", "by", " ", 
+     "step", " ", "rie\[SHacek]enia"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"GenerateSteps", "[", "]"}], ":=", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "sortedSubnets", ",", " ", "hosts", ",", " ", "subnetMasks", ",", " ",
+          "ipRange1", ",", " ", "ipRange2", ",", " ", "ipRange3", ",", " ", 
+         "ipRange4", ",", " ", "ipRange5", ",", " ", "ipRange", ",", " ", 
+         "router1", ",", "router2", ",", " ", "pc1", ",", " ", "pc2", ",", 
+         " ", "pc3", ",", " ", "pc4", ",", " ", "positionNetwork"}], "}"}], 
+       ",", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"sortedSubnets", " ", "=", " ", 
+         RowBox[{"Append", "[", 
+          RowBox[{
+           RowBox[{"AddAddresses", "[", 
+            RowBox[{
+             RowBox[{"ReverseSort", "[", 
+              RowBox[{"zasobnik", "[", 
+               RowBox[{"[", "3", "]"}], "]"}], "]"}], ",", " ", "3"}], "]"}], 
+           ",", " ", "4"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"hosts", " ", "=", " ", 
+         RowBox[{"FindHostPortion", "[", "sortedSubnets", "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"subnetMasks", " ", "=", " ", 
+         RowBox[{"FindSubnetMasks", "[", "hosts", "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipRange1", " ", "=", " ", 
+         RowBox[{"FindRange", "[", 
+          RowBox[{"hosts", ",", " ", "subnetMasks", ",", " ", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", "1"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipRange2", " ", "=", " ", 
+         RowBox[{"FindRange", "[", 
+          RowBox[{"hosts", ",", " ", "subnetMasks", ",", " ", 
+           RowBox[{"ipRange1", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], ",", "2"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipRange3", " ", "=", " ", 
+         RowBox[{"FindRange", "[", 
+          RowBox[{"hosts", ",", " ", "subnetMasks", ",", " ", 
+           RowBox[{"ipRange2", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], ",", "3"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipRange4", " ", "=", " ", 
+         RowBox[{"FindRange", "[", 
+          RowBox[{"hosts", ",", " ", "subnetMasks", ",", " ", 
+           RowBox[{"ipRange3", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], ",", "4"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipRange5", " ", "=", " ", 
+         RowBox[{"FindRange", "[", 
+          RowBox[{"hosts", ",", " ", "subnetMasks", ",", " ", 
+           RowBox[{"ipRange4", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], ",", "5"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"ipRange", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"ipRange1", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+           RowBox[{"ipRange2", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+           RowBox[{"ipRange3", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+           RowBox[{"ipRange4", "[", 
+            RowBox[{"[", "1", "]"}], "]"}]}], "}"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"positionNetwork", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"Position", "[", " ", 
+              RowBox[{
+               RowBox[{"zasobnik", "[", 
+                RowBox[{"[", "14", "]"}], "]"}], ",", 
+               RowBox[{
+                RowBox[{"sortedSubnets", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Position", "[", " ", 
+              RowBox[{
+               RowBox[{"zasobnik", "[", 
+                RowBox[{"[", "14", "]"}], "]"}], ",", 
+               RowBox[{
+                RowBox[{"sortedSubnets", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Position", "[", " ", 
+              RowBox[{
+               RowBox[{"zasobnik", "[", 
+                RowBox[{"[", "14", "]"}], "]"}], ",", 
+               RowBox[{
+                RowBox[{"sortedSubnets", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", "  ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Position", "[", " ", 
+              RowBox[{
+               RowBox[{"zasobnik", "[", 
+                RowBox[{"[", "14", "]"}], "]"}], ",", 
+               RowBox[{
+                RowBox[{"sortedSubnets", "[", 
+                 RowBox[{"[", "4", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+             RowBox[{"[", "1", "]"}], "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}]}], "}"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"router1", " ", "=", " ", 
+         RowBox[{"FindRouter", "[", 
+          RowBox[{
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "1"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", " ", 
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "2"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", " ", 
+           RowBox[{"ipRange5", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", " ", "1"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"router2", " ", "=", " ", 
+         RowBox[{"FindRouter", "[", 
+          RowBox[{
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "3"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", " ", 
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "4"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", " ", 
+           RowBox[{"ipRange5", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", " ", "2"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"pc1", " ", "=", " ", 
+         RowBox[{"FindPC", "[", 
+          RowBox[{
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "1"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "8", "]"}], "]"}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"pc2", " ", "=", " ", 
+         RowBox[{"FindPC", "[", 
+          RowBox[{
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "2"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "9", "]"}], "]"}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"pc3", " ", "=", " ", 
+         RowBox[{"FindPC", "[", 
+          RowBox[{
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "3"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "10", "]"}], "]"}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"pc4", " ", "=", " ", 
+         RowBox[{"FindPC", "[", 
+          RowBox[{
+           RowBox[{"ipRange", "[", 
+            RowBox[{"[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Position", "[", 
+                RowBox[{"positionNetwork", ",", " ", "4"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "11", "]"}], "]"}]}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+         "sortedSubnets", ",", " ", "hosts", ",", " ", "subnetMasks", ",", 
+          "  ", "ipRange1", ",", " ", "ipRange2", ",", " ", "ipRange3", ",", 
+          " ", "ipRange4", ",", " ", "ipRange5", ",", " ", "router1", ",", 
+          " ", "router2", ",", " ", "pc1", ",", " ", "pc2", ",", " ", "pc3", 
+          ",", " ", "pc4"}], "}"}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}],
+    "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Funkcia", " ", "pre", " ", "odhalenie", " ", "Step", " ", "by", " ", 
+     "Step", " ", "rie\[SHacek]enia"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"ShowSolution", "[", "]"}], ":=", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"CreateStepStack", "[", "]"}], ";", 
+      RowBox[{
+       RowBox[{"zasobnik", "[", 
+        RowBox[{"[", "12", "]"}], "]"}], "=", 
+       RowBox[{"Grid", "[", 
+        RowBox[{
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Text", "[", "\"\<Siet\>\"", "]"}], ",", 
+             RowBox[{"Text", "[", "\"\<Potrebne adresy\>\"", "]"}], ",", 
+             RowBox[{"Text", "[", "\"\<Host Portion\>\"", "]"}], ",", " ", 
+             RowBox[{"Text", "[", "\"\<Rozsah\>\"", "]"}], ",", " ", 
+             RowBox[{"Text", "[", "\"\<Maska\>\"", "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"StringJoin", "[", 
+              RowBox[{"\"\<N\>\"", ",", 
+               RowBox[{"ToString", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Position", "[", " ", 
+                   RowBox[{
+                    RowBox[{"zasobnik", "[", 
+                    RowBox[{"[", "14", "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"zasobnikStep", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+                  
+                  RowBox[{"[", "1", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "4", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}], " ", "-", 
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "4", "]"}], "]"}], "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"\"\</\>\"", "<>", 
+              RowBox[{"ToString", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "]"}]}]}], "}"}], ",", 
+           "\[IndentingNewLine]", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"StringJoin", "[", 
+              RowBox[{"\"\<N\>\"", ",", 
+               RowBox[{"ToString", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Position", "[", " ", 
+                   RowBox[{
+                    RowBox[{"zasobnik", "[", 
+                    RowBox[{"[", "14", "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"zasobnikStep", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+                  
+                  RowBox[{"[", "1", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "5", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}], " ", "-", 
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "5", "]"}], "]"}], "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"\"\</\>\"", "<>", 
+              RowBox[{"ToString", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "]"}]}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"StringJoin", "[", 
+              RowBox[{"\"\<N\>\"", ",", 
+               RowBox[{"ToString", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Position", "[", " ", 
+                   RowBox[{
+                    RowBox[{"zasobnik", "[", 
+                    RowBox[{"[", "14", "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"zasobnikStep", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+                  
+                  RowBox[{"[", "1", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "6", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}], " ", "-", 
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "6", "]"}], "]"}], "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"\"\</\>\"", "<>", 
+              RowBox[{"ToString", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "]"}]}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"StringJoin", "[", 
+              RowBox[{"\"\<N\>\"", ",", 
+               RowBox[{"ToString", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Position", "[", " ", 
+                   RowBox[{
+                    RowBox[{"zasobnik", "[", 
+                    RowBox[{"[", "14", "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"zasobnikStep", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "4", "]"}], "]"}], "-", "3"}]}], "]"}], "[", 
+                  
+                  RowBox[{"[", "1", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "[", 
+                RowBox[{"[", "4", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "[", 
+                RowBox[{"[", "4", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "7", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}], " ", "-", 
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "7", "]"}], "]"}], "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"\"\</\>\"", "<>", 
+              RowBox[{"ToString", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "[", 
+                RowBox[{"[", "4", "]"}], "]"}], "]"}]}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"\"\<N5\>\"", ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "[", 
+                RowBox[{"[", "5", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "[", 
+                RowBox[{"[", "5", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "8", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}], " ", "-", 
+               RowBox[{"Dynamic", "[", 
+                RowBox[{
+                 RowBox[{"zasobnikStep", "[", 
+                  RowBox[{"[", "8", "]"}], "]"}], "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "]"}], ",", 
+             RowBox[{"\"\</\>\"", "<>", 
+              RowBox[{"ToString", "[", 
+               RowBox[{
+                RowBox[{"zasobnikStep", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "[", 
+                RowBox[{"[", "5", "]"}], "]"}], "]"}]}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+            "\"\<R1 na porte S0/0/0 m\[AAcute] adresu \>\"", " ", "<>", " ", 
+             RowBox[{"ToString", "[", 
+              RowBox[{
+               RowBox[{"zasobnikStep", "[", 
+                RowBox[{"[", "9", "]"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "]"}], "<>", 
+             "\"\<, na porte G0/0 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{
+               RowBox[{"zasobnikStep", "[", 
+                RowBox[{"[", "9", "]"}], "]"}], "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "]"}], "<>", 
+             "\"\< a na porte G0/1 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{
+               RowBox[{"zasobnikStep", "[", 
+                RowBox[{"[", "9", "]"}], "]"}], "[", 
+               RowBox[{"[", "3", "]"}], "]"}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"\"\<R2 na porte S0/0/0 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{
+               RowBox[{"zasobnikStep", "[", 
+                RowBox[{"[", "10", "]"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "]"}], "<>", 
+             "\"\<, na porte G0/1 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{
+               RowBox[{"zasobnikStep", "[", 
+                RowBox[{"[", "10", "]"}], "]"}], "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "]"}], "<>", 
+             "\"\< a na porte G0/2 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{
+               RowBox[{"zasobnikStep", "[", 
+                RowBox[{"[", "10", "]"}], "]"}], "[", 
+               RowBox[{"[", "3", "]"}], "]"}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"\"\<PC1 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{"zasobnikStep", "[", 
+               RowBox[{"[", "11", "]"}], "]"}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"\"\<PC2 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{"zasobnikStep", "[", 
+               RowBox[{"[", "12", "]"}], "]"}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"\"\<PC3 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{"zasobnikStep", "[", 
+               RowBox[{"[", "13", "]"}], "]"}], "]"}]}], "}"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"\"\<PC4 m\[AAcute] adresu \>\"", "<>", 
+             RowBox[{"ToString", "[", 
+              RowBox[{"zasobnikStep", "[", 
+               RowBox[{"[", "14", "]"}], "]"}], "]"}]}], "}"}]}], 
+          "\[IndentingNewLine]", "}"}], ",", 
+         RowBox[{"Spacings", " ", "\[Rule]", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", "2"}], "}"}]}], ",", 
+         RowBox[{"Frame", "->", 
+          RowBox[{"{", 
+           RowBox[{"None", ",", " ", "None", ",", " ", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"1", ",", "6"}], "}"}], ",", " ", 
+                RowBox[{"{", 
+                 RowBox[{"1", ",", "5"}], "}"}]}], "}"}], "->", "True"}], 
+             "}"}]}], "}"}]}], ",", 
+         RowBox[{"Alignment", "\[Rule]", "Left"}]}], "]"}]}]}], 
+     "\[IndentingNewLine]", ")"}]}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{"Funkcia", " ", "pre", " ", "skrytie", " ", "rie\[SHacek]enia"}], 
+    "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"HideSolution", "[", "]"}], ":=", 
+     RowBox[{
+      RowBox[{"zasobnik", "[", 
+       RowBox[{"[", "12", "]"}], "]"}], "=", "\"\<Solution is hidden\>\""}]}],
+     ";"}], "\n", "\n", 
+   RowBox[{"(*", 
+    RowBox[{"Nastavenie", " ", "v\[YAcute]chodiskovej", " ", "hodnoty"}], 
+    "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"zasobnik", "[", 
+      RowBox[{"[", "12", "]"}], "]"}], "=", "\"\<Solution is hidden\>\""}], 
+    ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Definovanie", " ", "pou\[ZHacek]\[IAcute]vate\:013esk\[EAcute]ho", " ", 
+     "rozhrania"}], "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"file", " ", "=", " ", 
+     RowBox[{"FileNameJoin", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"FileNameTake", "[", 
+         RowBox[{
+          RowBox[{"NotebookDirectory", "[", "]"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", 
+            RowBox[{"-", "2"}]}], "}"}]}], "]"}], ",", " ", "\"\<assets\>\"", 
+        ",", " ", "\"\<assignment.png\>\""}], "}"}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"image", " ", "=", " ", 
+     RowBox[{"Import", "[", "file", "]"}]}], ";"}], "\n", 
+   RowBox[{"Grid", "[", 
+    RowBox[{
+     RowBox[{"{", "\n", "        ", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Item", "[", 
+          RowBox[{"Text", "[", 
+           RowBox[{"Style", "[", 
+            RowBox[{
+            "\"\<Logicky\:0301 na\:0301vrh siete v na\:0301stroji Packet \
+Tracer\>\"", ",", 
+             RowBox[{"FontSize", "\[Rule]", "18"}], ",", " ", 
+             RowBox[{"FontColor", "\[Rule]", "Red"}], ",", 
+             RowBox[{"TextAlignment", "\[Rule]", "Left"}]}], "]"}], "]"}], 
+          "]"}], ",", " ", "\"\<\>\""}], "}"}], ",", " ", "\n", "        ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Item", "[", 
+          RowBox[{"Text", "[", 
+           RowBox[{"Style", "[", 
+            RowBox[{
+            "\"\<Navrhnite adresovaciu sche\:0301mu siete podl\:030ca obra\
+\:0301zka. Adresa siete: \>\"", ",", 
+             RowBox[{"FontSize", "\[Rule]", "15"}]}], "]"}], "]"}], "]"}], 
+         ",", 
+         RowBox[{"Grid", "[", 
+          RowBox[{"{", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Pane", "[", 
+              RowBox[{"Dynamic", "[", 
+               RowBox[{"zasobnik", "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Text", "[", "\"\</\>\"", "]"}], ",", 
+             RowBox[{"Text", "[", 
+              RowBox[{"zasobnik", "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "}"}], "}"}], "]"}]}],
+         "}"}], ",", "\n", "        ", 
+       RowBox[{"{", 
+        RowBox[{"Item", "[", 
+         RowBox[{
+         "Text", "[", 
+          "\"\<Vytvorte podsiete podl\:030ca VLSM tak, aby sa adresami \
+plytvalo c\:030co najmenej ak podsiete obsahuju\:0301: \>\"", "]"}], "]"}], 
+        "}"}], ",", "\n", 
+       "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Item", "[", 
+          RowBox[{"Text", "[", "\"\<Siet\:030c N1: \>\"", "]"}], "]"}], ",", 
+         RowBox[{"Pane", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "4", "]"}], "]"}], "]"}], "]"}]}], "   ", "}"}], ",",
+        "\n", "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Item", "[", 
+          RowBox[{"Text", "[", "\"\<Siet\:030c N2: \>\"", "]"}], "]"}], ",", 
+         RowBox[{"Pane", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "5", "]"}], "]"}], "]"}], "]"}]}], "}"}], " ", ",", 
+       "\n", "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Item", "[", 
+          RowBox[{"Text", "[", "\"\<Siet\:030c N3: \>\"", "]"}], "]"}], ",", 
+         RowBox[{"Pane", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "6", "]"}], "]"}], "]"}], "]"}]}], "}"}], " ", ",", 
+       "\n", "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Item", "[", 
+          RowBox[{"Text", "[", "\"\<Siet\:030c N4: \>\"", "]"}], "]"}], ",", 
+         RowBox[{"Pane", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "7", "]"}], "]"}], "]"}], "]"}]}], "}"}], " ", ",", 
+       "\n", "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{"Item", "[", 
+         RowBox[{
+         "Text", "[", 
+          "\"\<Adresy se\:0301riovy\:0301ch rozhrani\:0301 su\:0301 \
+vz\:030cdy prve\:0301 dve platne\:0301 adresy v danej podsieti. R1 ma\:0301 \
+niz\:030cs\:030ciu IP adresu na se\:0301riovom rozhrani\:0301 ako R2. Adresy \
+ethernetovy\:0301ch rozhrani\:0301 smerovac\:030cov su\:0301 vz\:030cdy prve\
+\:0301 platne\:0301 v danej podsieti.\>\"", "\n", "]"}], "]"}], "}"}], ",", 
+       "\n", "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Text", "[", "\"\<Adresa PC1 je\>\"", "]"}], ",", 
+         RowBox[{"Text", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "8", "]"}], "]"}], "]"}], "]"}], ",", 
+         RowBox[{
+         "Text", "[", "\"\<platna\:0301 adresa v danej podsieti.\>\"", "]"}], 
+         ",", "\"\<\>\""}], "}"}], ",", "\n", 
+       "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Text", "[", "\"\<Adresa PC2 je\>\"", "]"}], ",", 
+         RowBox[{"Text", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "9", "]"}], "]"}], "]"}], "]"}], ",", 
+         RowBox[{
+         "Text", "[", "\"\<platna\:0301 adresa v danej podsieti.\>\"", "]"}], 
+         ",", "\"\<\>\""}], "}"}], ",", "\n", 
+       "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Text", "[", "\"\<Adresa PC3 je\>\"", "]"}], ",", 
+         RowBox[{"Text", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "10", "]"}], "]"}], "]"}], "]"}], ",", 
+         RowBox[{
+         "Text", "[", "\"\<platna\:0301 adresa v danej podsieti.\>\"", "]"}], 
+         ",", "\"\<\>\""}], "}"}], ",", "\n", 
+       "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Text", "[", "\"\<Adresa PC4 je\>\"", "]"}], ",", 
+         RowBox[{"Text", "[", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{"zasobnik", "[", 
+            RowBox[{"[", "11", "]"}], "]"}], "]"}], "]"}], ",", 
+         RowBox[{
+         "Text", "[", "\"\<platna\:0301 adresa v danej podsieti.\>\"", "]"}], 
+         ",", "\"\<\>\""}], "}"}], ",", "\n", 
+       "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{"Item", "[", 
+         RowBox[{
+         "Text", "[", 
+          "\"\<V na\:0301stroji Packet Tracer zostavte topolo\:0301giu siete \
+podl\:030ca obra\:0301zka. Vs\:030cetky prepojenia, okrem prepojenia medzi \
+smerovac\:030cmi, su\:0301 ethernet. Medzi smerovac\:030cmi je se\:0301riove\
+\:0301 prepojenie. Nakonfigurujte poz\:030cadovanu\:0301 adresovaciu sche\
+\:0301mu a staticke\:0301 smerovanie tak, aby bola umoz\:030cnena\:0301 \
+komunika\:0301cia vs\:030cetky\:0301ch koncovy\:0301ch uzlov. \>\"", "]"}], 
+         "]"}], "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{"Dynamic", "[", "image", "]"}], "}"}], ",", "\n", 
+       "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Item", "[", 
+          RowBox[{"Button", "[", 
+           RowBox[{"\"\<Generate\>\"", ",", 
+            RowBox[{"CreateStack", "[", "]"}]}], "]"}], "]"}], ",", 
+         RowBox[{"Item", "[", 
+          RowBox[{"Button", "[", 
+           RowBox[{"\"\<Show Solution\>\"", ",", 
+            RowBox[{"ShowSolution", "[", "]"}]}], "]"}], "]"}], ",", 
+         RowBox[{"Item", "[", 
+          RowBox[{"Button", "[", 
+           RowBox[{"\"\<Hide Solution\>\"", ",", 
+            RowBox[{"HideSolution", "[", "]"}]}], "]"}], "]"}]}], "}"}], ",", 
+       "\n", "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", 
+       RowBox[{"{", 
+        RowBox[{"Pane", "[", 
+         RowBox[{"Dynamic", "[", 
+          RowBox[{"zasobnik", "[", 
+           RowBox[{"[", "12", "]"}], "]"}], "]"}], "]"}], "}"}]}], "\n", 
+      "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]", "}"}], ",",
+      "\n", "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+     RowBox[{"Spacings", " ", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"2", ",", "2"}], "}"}]}], ",", "\n", 
+     "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+     RowBox[{"Frame", "\[Rule]", "True"}], ",", "\n", 
+     "\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\[NonBreakingSpace]\
+\[NonBreakingSpace]", 
+     RowBox[{"Alignment", "\[Rule]", "Left"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"BaseStyle", "->", 
+      RowBox[{"ImageSizeMultipliers", "->", "2"}]}]}], "]"}], "\n", 
+   "\n"}]}]], "Input",
+ CellChangeTimes->{{3.849100243606579*^9, 3.84910033390274*^9}, {
+   3.849100421853223*^9, 3.849100448138936*^9}, {3.849100616679038*^9, 
+   3.849100633689817*^9}, {3.849100671430743*^9, 3.8491007469693203`*^9}, {
+   3.84910114401044*^9, 3.8491011557105303`*^9}, {3.849101205770647*^9, 
+   3.849101210788404*^9}, {3.849101343237405*^9, 3.84910134790189*^9}, 
+   3.849101494501375*^9, {3.84910158798393*^9, 3.849101614080166*^9}, {
+   3.8491016612814074`*^9, 3.849101746673077*^9}, {3.849101778323752*^9, 
+   3.849101825382145*^9}, {3.8491019101186743`*^9, 3.849101917986117*^9}, {
+   3.849101989629319*^9, 3.849102010311962*^9}, {3.849102168222611*^9, 
+   3.849102317473219*^9}, {3.84910238460775*^9, 3.849102431800693*^9}, {
+   3.84910247616082*^9, 3.849102479328343*^9}, {3.849102510881865*^9, 
+   3.849102798478446*^9}, {3.849102892066453*^9, 3.8491029372867737`*^9}, {
+   3.849109832947034*^9, 3.849109860040621*^9}, {3.849113633504834*^9, 
+   3.849113682658712*^9}, {3.849113714441907*^9, 3.849113762799398*^9}, {
+   3.8491138391490707`*^9, 3.849113856371881*^9}, {3.849113919927135*^9, 
+   3.849113944453013*^9}, {3.849113987410472*^9, 3.84911405794837*^9}, {
+   3.849154733043189*^9, 3.849154748428431*^9}, {3.849154801644404*^9, 
+   3.8491548098587646`*^9}, {3.8491548836917763`*^9, 3.849154913459035*^9}, {
+   3.849154943901313*^9, 3.8491549456991453`*^9}, {3.849154982099567*^9, 
+   3.849154985863509*^9}, {3.849155050075954*^9, 3.849155229828486*^9}, {
+   3.849155288639555*^9, 3.8491553207718573`*^9}, {3.849155354736422*^9, 
+   3.8491553578721447`*^9}, {3.849155416033291*^9, 3.849155557748481*^9}, {
+   3.8491560217449303`*^9, 3.849156124863769*^9}, {3.849156195842499*^9, 
+   3.849156236316967*^9}, {3.849156308533087*^9, 3.849156327767643*^9}, {
+   3.849156375203622*^9, 3.849156375404378*^9}, 3.8491567316778*^9, {
+   3.8491567690891523`*^9, 3.849156783324773*^9}, {3.849156822129717*^9, 
+   3.8491568949469223`*^9}, {3.849166759888661*^9, 3.849166773862733*^9}, {
+   3.8491668572263527`*^9, 3.8491668582969112`*^9}, {3.8491668969572763`*^9, 
+   3.849166912790118*^9}, {3.8491670611872387`*^9, 3.8491670728892193`*^9}, {
+   3.84916710824673*^9, 3.849167232289732*^9}, {3.8491675000107613`*^9, 
+   3.849167532606434*^9}, {3.849167626108206*^9, 3.849167705828577*^9}, 
+   3.84916776911819*^9, {3.84916791523908*^9, 3.849168002483605*^9}, {
+   3.849168034244796*^9, 3.84916807143458*^9}, {3.8491681078539257`*^9, 
+   3.84916812854173*^9}, {3.849168185868382*^9, 3.849168192638792*^9}, {
+   3.849168240111561*^9, 3.849168269035231*^9}, {3.849168302532329*^9, 
+   3.849168353967901*^9}, {3.849168392430379*^9, 3.849168412080804*^9}, {
+   3.849168445549726*^9, 3.849168446121874*^9}, {3.849168478490201*^9, 
+   3.849168541778723*^9}, {3.84916857923068*^9, 3.849168664649344*^9}, {
+   3.8491687399373837`*^9, 3.849168814155738*^9}, {3.84916886648597*^9, 
+   3.849168871301222*^9}, {3.849168912583707*^9, 3.849169142490006*^9}, {
+   3.849169184128476*^9, 3.849169288540078*^9}, {3.8491693216708307`*^9, 
+   3.8491693941897*^9}, {3.84916943411862*^9, 3.84916946057677*^9}, {
+   3.849169506070202*^9, 3.849169507089436*^9}, {3.849169553861457*^9, 
+   3.849169592267003*^9}, {3.849169645714991*^9, 3.849169735923896*^9}, {
+   3.84916983617483*^9, 3.8491698746764927`*^9}, {3.8491716673235197`*^9, 
+   3.8491720599101267`*^9}, {3.849172174250297*^9, 3.849172207265388*^9}, {
+   3.849172239589724*^9, 3.8491723862462*^9}, {3.84917244501687*^9, 
+   3.849172452283925*^9}, {3.849172494835247*^9, 3.849172497386451*^9}, {
+   3.849172639979743*^9, 3.849172667754204*^9}, {3.84917270618505*^9, 
+   3.849172937225699*^9}, {3.849172970955097*^9, 3.849172976312251*^9}, {
+   3.8491730164391603`*^9, 3.8491730183426867`*^9}, {3.849173054763549*^9, 
+   3.849173115167514*^9}, {3.849173146284075*^9, 3.849173146606655*^9}, {
+   3.8491755927342167`*^9, 3.849175653990695*^9}, {3.849175901475008*^9, 
+   3.849175973332467*^9}, {3.849176177365569*^9, 3.849176283093747*^9}, {
+   3.8491763387981997`*^9, 3.8491763549407263`*^9}, {3.849176426309628*^9, 
+   3.849176432379065*^9}, {3.849176466619164*^9, 3.8491764843154697`*^9}, {
+   3.8491765179141483`*^9, 3.849176543731717*^9}, {3.84917659561957*^9, 
+   3.849176606551943*^9}, {3.849177194268338*^9, 3.849177221629608*^9}, {
+   3.849177253753181*^9, 3.849177326168148*^9}, {3.849177360309311*^9, 
+   3.849177411931581*^9}, {3.849177454236555*^9, 3.849177456318006*^9}, {
+   3.849177505741334*^9, 3.8491775691365623`*^9}, {3.8491776403210506`*^9, 
+   3.849177701969893*^9}, {3.8491778583222237`*^9, 3.849177880082943*^9}, {
+   3.8491790210767527`*^9, 3.849179064961117*^9}, {3.849179149889579*^9, 
+   3.849179152024856*^9}, {3.849179219554914*^9, 3.849179331791111*^9}, {
+   3.849179385984997*^9, 3.8491796694812107`*^9}, {3.849179731124629*^9, 
+   3.849179817033978*^9}, 3.849180075705254*^9, {3.849180198700871*^9, 
+   3.849180202671424*^9}, {3.849180234137435*^9, 3.849180237022551*^9}, {
+   3.849180337311287*^9, 3.849180404773479*^9}, {3.849182117507987*^9, 
+   3.8491821213693657`*^9}, {3.8491821878810453`*^9, 3.849182189668235*^9}, {
+   3.849182224169664*^9, 3.849182288309058*^9}, {3.8491823576007957`*^9, 
+   3.84918236651129*^9}, {3.849182536654805*^9, 3.849182546829096*^9}, {
+   3.849182930347302*^9, 3.849183006920561*^9}, {3.849183197795453*^9, 
+   3.84918320348098*^9}, {3.849183457883334*^9, 3.849183526744186*^9}, 
+   3.849188566564221*^9, 3.849188780699362*^9, {3.8491888260613537`*^9, 
+   3.849188917486435*^9}},
+ CellLabel->"In[96]:=",ExpressionUUID->"13b80300-a277-433e-a56d-d28d4a27b5c1"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox[
+         StyleBox["\<\"Logicky\:0301 na\:0301vrh siete v na\:0301stroji \
+Packet Tracer\"\>",
+          StripOnInput->False,
+          TextAlignment->Left,
+          FontSize->18,
+          FontColor->RGBColor[1, 0, 0]], TextForm]], "InlineText",
+        ExpressionUUID->"c2f4b935-dcdc-415f-a8de-eb67febfacdc"],
+       Text[
+        Style[
+        "Logicky\:0301 na\:0301vrh siete v na\:0301stroji Packet Tracer", 
+         FontSize -> 18, FontColor -> RGBColor[1, 0, 0], TextAlignment -> 
+         Left]]],
+      StripOnInput->False], "\<\"\"\>", "", ""},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox[
+         StyleBox["\<\"Navrhnite adresovaciu sche\:0301mu siete podl\:030ca \
+obra\:0301zka. Adresa siete: \"\>",
+          StripOnInput->False,
+          FontSize->15], TextForm]], "InlineText",ExpressionUUID->
+        "0780b21e-7cda-43dd-b693-20181215e30a"],
+       Text[
+        Style[
+        "Navrhnite adresovaciu sche\:0301mu siete podl\:030ca obra\:0301zka. \
+Adresa siete: ", FontSize -> 15]]],
+      StripOnInput->False], 
+     TagBox[GridBox[{
+        {
+         PaneBox[
+          DynamicBox[ToBoxes[
+            Part[$CellContext`zasobnik, 1], StandardForm],
+           ImageSizeCache->{79., {1., 9.}}]], 
+         InterpretationBox[Cell[BoxData[
+           FormBox["\<\"/\"\>", TextForm]], "InlineText",ExpressionUUID->
+           "71f614c5-7497-4915-8bcb-4731a51f5d52"],
+          Text["/"]], 
+         InterpretationBox[Cell[BoxData[
+           FormBox["12", TextForm]], "InlineText",ExpressionUUID->
+           "50d569d1-7b91-413d-b1f0-1bd667dc6876"],
+          Text[12]]}
+       },
+       AutoDelete->False,
+       GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+      "Grid"], "", ""},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox["\<\"Vytvorte podsiete podl\:030ca VLSM tak, aby sa adresami \
+plytvalo c\:030co najmenej ak podsiete obsahuju\:0301: \"\>", TextForm]], 
+        "InlineText",ExpressionUUID->"96b4b789-0371-4e9d-a492-edb345c18184"],
+       Text[
+       "Vytvorte podsiete podl\:030ca VLSM tak, aby sa adresami plytvalo c\
+\:030co najmenej ak podsiete obsahuju\:0301: "]],
+      StripOnInput->False], "", "", ""},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox["\<\"Siet\:030c N1: \"\>", TextForm]], "InlineText",
+        ExpressionUUID->"6460f669-6523-4680-ac8f-e8a29239000c"],
+       Text["Siet\:030c N1: "]],
+      StripOnInput->False], 
+     PaneBox[
+      DynamicBox[ToBoxes[
+        Part[$CellContext`zasobnik, 4], StandardForm],
+       ImageSizeCache->{8., {1., 9.}}]], "", ""},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox["\<\"Siet\:030c N2: \"\>", TextForm]], "InlineText",
+        ExpressionUUID->"49667adb-14bb-491e-ae26-c0295527d5ce"],
+       Text["Siet\:030c N2: "]],
+      StripOnInput->False], 
+     PaneBox[
+      DynamicBox[ToBoxes[
+        Part[$CellContext`zasobnik, 5], StandardForm],
+       ImageSizeCache->{16., {1., 9.}}]], "", ""},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox["\<\"Siet\:030c N3: \"\>", TextForm]], "InlineText",
+        ExpressionUUID->"902f59b5-c42e-4062-80f1-5f73efe48359"],
+       Text["Siet\:030c N3: "]],
+      StripOnInput->False], 
+     PaneBox[
+      DynamicBox[ToBoxes[
+        Part[$CellContext`zasobnik, 6], StandardForm],
+       ImageSizeCache->{31., {1., 9.}}]], "", ""},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox["\<\"Siet\:030c N4: \"\>", TextForm]], "InlineText",
+        ExpressionUUID->"e3e4e165-65a6-4f66-b12b-e10145e7c8f2"],
+       Text["Siet\:030c N4: "]],
+      StripOnInput->False], 
+     PaneBox[
+      DynamicBox[ToBoxes[
+        Part[$CellContext`zasobnik, 7], StandardForm],
+       ImageSizeCache->{31., {1., 9.}}]], "", ""},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox["\<\"Adresy se\:0301riovy\:0301ch rozhrani\:0301 su\:0301 vz\
+\:030cdy prve\:0301 dve platne\:0301 adresy v danej podsieti. R1 ma\:0301 niz\
+\:030cs\:030ciu IP adresu na se\:0301riovom rozhrani\:0301 ako R2. Adresy \
+ethernetovy\:0301ch rozhrani\:0301 smerovac\:030cov su\:0301 vz\:030cdy prve\
+\:0301 platne\:0301 v danej podsieti.\"\>", TextForm]], "InlineText",
+        ExpressionUUID->"54ac9304-2c74-47a1-ae95-468ebc6e3a1c"],
+       Text[
+       "Adresy se\:0301riovy\:0301ch rozhrani\:0301 su\:0301 vz\:030cdy prve\
+\:0301 dve platne\:0301 adresy v danej podsieti. R1 ma\:0301 \
+niz\:030cs\:030ciu IP adresu na se\:0301riovom rozhrani\:0301 ako R2. Adresy \
+ethernetovy\:0301ch rozhrani\:0301 smerovac\:030cov su\:0301 vz\:030cdy prve\
+\:0301 platne\:0301 v danej podsieti."]],
+      StripOnInput->False], "", "", ""},
+    {
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"Adresa PC1 je\"\>", TextForm]], "InlineText",
+       ExpressionUUID->"5b4ec8bc-35c0-4df1-b3be-b8595fa9c628"],
+      Text["Adresa PC1 je"]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox[
+        DynamicBox[ToBoxes[
+          Part[$CellContext`zasobnik, 8], StandardForm],
+         ImageSizeCache->{7., {0., 10.}}], TextForm]], "InlineText",
+       ExpressionUUID->"77046f8c-bd68-438f-a2df-85e58cc57e74"],
+      Text[
+       Dynamic[
+        Part[$CellContext`zasobnik, 8]]]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"platna\:0301 adresa v danej podsieti.\"\>", TextForm]], 
+       "InlineText",ExpressionUUID->"1f271b0e-a7e9-4cb0-bcc2-4d48860c1ea4"],
+      Text["platna\:0301 adresa v danej podsieti."]], "\<\"\"\>"},
+    {
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"Adresa PC2 je\"\>", TextForm]], "InlineText",
+       ExpressionUUID->"52b9f219-a7f9-44cd-95ff-3aa8bb87cb83"],
+      Text["Adresa PC2 je"]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox[
+        DynamicBox[ToBoxes[
+          Part[$CellContext`zasobnik, 9], StandardForm],
+         ImageSizeCache->{7., {1., 10.}}], TextForm]], "InlineText",
+       ExpressionUUID->"018cd643-c3cd-49ff-93da-460112ed20ba"],
+      Text[
+       Dynamic[
+        Part[$CellContext`zasobnik, 9]]]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"platna\:0301 adresa v danej podsieti.\"\>", TextForm]], 
+       "InlineText",ExpressionUUID->"c8599d0c-28e7-4549-9b8f-ecc311d0852b"],
+      Text["platna\:0301 adresa v danej podsieti."]], "\<\"\"\>"},
+    {
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"Adresa PC3 je\"\>", TextForm]], "InlineText",
+       ExpressionUUID->"40fd002e-310b-410a-9168-656ee5641c64"],
+      Text["Adresa PC3 je"]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox[
+        DynamicBox[ToBoxes[
+          Part[$CellContext`zasobnik, 10], StandardForm],
+         ImageSizeCache->{22., {0., 10.}}], TextForm]], "InlineText",
+       ExpressionUUID->"f11de8e2-c810-4818-97ea-aca4c70bde0e"],
+      Text[
+       Dynamic[
+        Part[$CellContext`zasobnik, 10]]]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"platna\:0301 adresa v danej podsieti.\"\>", TextForm]], 
+       "InlineText",ExpressionUUID->"b8fc5a1a-a830-4728-87a1-ebce10a0f010"],
+      Text["platna\:0301 adresa v danej podsieti."]], "\<\"\"\>"},
+    {
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"Adresa PC4 je\"\>", TextForm]], "InlineText",
+       ExpressionUUID->"bea3b5db-5405-4523-94e8-58a433b6f1c4"],
+      Text["Adresa PC4 je"]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox[
+        DynamicBox[ToBoxes[
+          Part[$CellContext`zasobnik, 11], StandardForm],
+         ImageSizeCache->{22., {1., 10.}}], TextForm]], "InlineText",
+       ExpressionUUID->"bc19835e-f1e7-4aa4-a17f-eba5961559cb"],
+      Text[
+       Dynamic[
+        Part[$CellContext`zasobnik, 11]]]], 
+     InterpretationBox[Cell[BoxData[
+       FormBox["\<\"platna\:0301 adresa v danej podsieti.\"\>", TextForm]], 
+       "InlineText",ExpressionUUID->"e7cb579e-1992-4429-855e-3ddf9f10636f"],
+      Text["platna\:0301 adresa v danej podsieti."]], "\<\"\"\>"},
+    {
+     ItemBox[
+      InterpretationBox[Cell[BoxData[
+        FormBox["\<\"V na\:0301stroji Packet Tracer zostavte topolo\:0301giu \
+siete podl\:030ca obra\:0301zka. Vs\:030cetky prepojenia, okrem prepojenia \
+medzi smerovac\:030cmi, su\:0301 ethernet. Medzi smerovac\:030cmi je \
+se\:0301riove\:0301 prepojenie. Nakonfigurujte poz\:030cadovanu\:0301 \
+adresovaciu sche\:0301mu a staticke\:0301 smerovanie tak, aby bola \
+umoz\:030cnena\:0301 komunika\:0301cia vs\:030cetky\:0301ch koncovy\:0301ch \
+uzlov. \"\>", TextForm]], "InlineText",ExpressionUUID->
+        "3f8ce31d-ee0d-4dc7-b64b-a839ba3b53ba"],
+       Text[
+       "V na\:0301stroji Packet Tracer zostavte topolo\:0301giu siete podl\
+\:030ca obra\:0301zka. Vs\:030cetky prepojenia, okrem prepojenia medzi \
+smerovac\:030cmi, su\:0301 ethernet. Medzi smerovac\:030cmi je se\:0301riove\
+\:0301 prepojenie. Nakonfigurujte poz\:030cadovanu\:0301 adresovaciu sche\
+\:0301mu a staticke\:0301 smerovanie tak, aby bola umoz\:030cnena\:0301 \
+komunika\:0301cia vs\:030cetky\:0301ch koncovy\:0301ch uzlov. "]],
+      StripOnInput->False], "", "", ""},
+    {
+     DynamicBox[ToBoxes[$CellContext`image, StandardForm],
+      ImageSizeCache->{720., {172., 176.}}], "", "", ""},
+    {
+     ItemBox[
+      ButtonBox["\<\"Generate\"\>",
+       Appearance->Automatic,
+       ButtonFunction:>$CellContext`CreateStack[],
+       Evaluator->Automatic,
+       Method->"Preemptive"],
+      StripOnInput->False], 
+     ItemBox[
+      ButtonBox["\<\"Show Solution\"\>",
+       Appearance->Automatic,
+       ButtonFunction:>$CellContext`ShowSolution[],
+       Evaluator->Automatic,
+       Method->"Preemptive"],
+      StripOnInput->False], 
+     ItemBox[
+      ButtonBox["\<\"Hide Solution\"\>",
+       Appearance->Automatic,
+       ButtonFunction:>$CellContext`HideSolution[],
+       Evaluator->Automatic,
+       Method->"Preemptive"],
+      StripOnInput->False], ""},
+    {
+     PaneBox[
+      DynamicBox[ToBoxes[
+        Part[$CellContext`zasobnik, 12], StandardForm],
+       ImageSizeCache->{1574., {231.1328125, 236.8671875}}]], "", "", ""}
+   },
+   AutoDelete->False,
+   BaseStyle->(ImageSizeMultipliers -> 2),
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxFrame->{"ColumnsIndexed" -> {{{1, -1}, {1, -1}} -> True}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
+  "Grid"]], "Output",
+ CellChangeTimes->{
+  3.849183528156197*^9, 3.84918364835929*^9, 3.849188367473171*^9, 
+   3.849188568251483*^9, 3.849188689581254*^9, 3.849188786208212*^9, {
+   3.849188836252358*^9, 3.849188856652349*^9}, {3.8491889002699757`*^9, 
+   3.849188917934561*^9}},
+ CellLabel->
+  "Out[114]=",ExpressionUUID->"af7ded34-bdcf-4b71-8f78-8ffe23629176"]
+}, Open  ]]
+},
+WindowSize->{2560, 1472},
+WindowMargins->{{0, Automatic}, {0, Automatic}},
+TaggingRules->Association["TryRealOnly" -> False],
+FrontEndVersion->"12.3 for Linux x86 (64-bit) (July 9, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"4af17107-2aa4-4e1c-886f-842950ff6e54"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 60905, 1381, 3683, "Input",ExpressionUUID->"13b80300-a277-433e-a56d-d28d4a27b5c1"],
+Cell[61488, 1405, 10831, 256, 1518, "Output",ExpressionUUID->"af7ded34-bdcf-4b71-8f78-8ffe23629176"]
+}, Open  ]]
+}
+]
+*)
+
