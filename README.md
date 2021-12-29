@@ -2,6 +2,14 @@
 
 Project is a simple exercise tool created as a school assignment for the Data Science Programming course. The point of creating this project was developing a simple tool to help students of Faculty of Informatics and Information Technologies (FIIT STU) with simple subnetting exercises. This tool is entirely written in Wolfram Mathematica and developed without using any external sources. Tool is developed entirely in Slovak Language.
 
+- Programming Language: Wolfram Mathematica
+
+- Code Language: English
+
+- Comments Language: English
+
+- User Interface Language: Slovak
+
 
 
 ## Authors
